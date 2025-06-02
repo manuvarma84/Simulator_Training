@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Create New Simulation Instance</h2>
+    <form method="POST" id="simulation-form">
+        <!-- Simulation Selection -->
+        <div class="mb-3">
+            <label class="form-label">Select Simulation Package *</label>
+				<select class="form-select" name="package_id" required>
+					<option value="">Select Simulation Package</option>
+					{% for item in packages %}
+						<option value="{{ item.id }}">
+							{{ item.name }} (v{{ item.active_version.version }})
+						</option>
+					{% endfor %}
+				</select>
+        </div>
+
+        <!-- Instance Configuration -->
+        <div class="mb-3">
+            <label class="form-label">Simulation Instance Name *</label>
+            <input type="text" name="instance_name" class="form-control" 
+                   required minlength="3" maxlength="100"
+                   placeholder="e.g., Fall 2024 Marketing Simulation">
+        </div>
+
+        <!-- Package Configuration (Dynamic based on manifest) -->
+        <div class="card mb-4">
+            <div class="card-header">Simulation Parameters</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Maximum Rounds</label>
+                        <input type="number" class="form-control" 
+                               name="max_rounds" value="20" 
+                               min="5" max="50" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Initial Cash ($ million)</label>
+                        <input type="number" class="form-control" 
+                               name="initial_cash" value="50" 
+                               min="10" max="100" step="5" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+                Create Simulation Instance
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Remove all previous JavaScript and add simple validation -->
+<script>
+document.getElementById('simulation-form').addEventListener('submit', function(e) {
+    const packageSelect = document.querySelector('[name="package_id"]');
+    if(packageSelect.value === "") {
+        e.preventDefault();
+        alert('Please select a simulation package');
+        packageSelect.focus();
+    }
+});
+</script>
+
+<style>
+/* Keep only necessary styling */
+.card-header {
+    font-weight: 500;
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}

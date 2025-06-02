@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Assign Simulation: {{ sim.name }}</h2>
+    
+    <!-- Filter Form -->
+    <div class="card mt-4">
+        <div class="card-header bg-light">
+            <h5>Filter Students</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" id="filterForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Program Type</label>
+                        <select class="form-select" name="program_type">
+                            <option value="">All Programs</option>
+                            {% for pt in program_types %}
+                                <option value="{{ pt }}" {% if pt == request.args.program_type %}selected{% endif %}>
+                                    {{ pt }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Batch Year</label>
+                        <input type="text" class="form-control" name="batch_info" 
+                               value="{{ request.args.get('batch_info', '') }}"
+                               placeholder="e.g., 2023">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Detailed Batch</label>
+                        <input type="text" class="form-control" name="detailed_batch" 
+                               value="{{ request.args.get('detailed_batch', '') }}"
+                               placeholder="e.g., Computer Science A">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-filter"></i> Apply Filters
+                    </button>
+                    <a href="{{ url_for('prof.assign_simulation', sim_id=sim.id) }}" class="btn btn-secondary">
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student List -->
+    {% if students %}
+    <div class="card mt-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Matching Students ({{ students|length }})</h5>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleSelectAll()">
+                <i class="bi bi-check-all"></i> Toggle All
+            </button>
+        </div>
+        
+        <div class="card-body">
+            <form method="POST" id="assignForm">
+                <!-- Date Selection -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Start Date & Time</label>
+                        <input type="datetime-local" name="start_date" 
+                               class="form-control" required
+							   min="{{ now().strftime('%Y-%m-%dT%H:%M') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">End Date & Time</label>
+                        <input type="datetime-local" name="end_date" 
+                               class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="list-group">
+                    {% for student in students %}
+					<label class="list-group-item d-flex align-items-center">
+						<input class="form-check-input me-3 student-checkbox" 
+							type="checkbox" 
+							name="student_ids" 
+							value="{{ student.id }}"
+							{% if student.id in existing_assignments %}checked disabled{% endif %}>
+						<div class="flex-grow-1">
+							<div class="d-flex justify-content-between align-items-center">
+								<!-- Added ID display -->
+								<div class="text-muted small me-3">ID: {{ student.id }}</div>
+								<span class="flex-grow-1">{{ student.name }}</span>
+								<small class="text-muted">{{ student.email }}</small>
+							</div>
+							<div class="text-muted small mt-1">
+								{{ student.program_type }} | 
+								Batch {{ student.batch_info }} | 
+								{{ student.detailed_batch }}
+							</div>
+						</div>
+					</label>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-send-check"></i> Assign to Selected Students
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('.student-checkbox:not(:disabled)');
+    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    
+    checkboxes.forEach(checkbox => {
+        if (!checkbox.disabled) {
+            checkbox.checked = !allChecked;
+        }
+    });
+}
+
+// Preserve filters when submitting assignment
+document.getElementById('assignForm').addEventListener('submit', function(e) {
+    const filterForm = document.getElementById('filterForm');
+    const formData = new FormData(filterForm);
+    
+    // Add active filters as hidden inputs
+    for (const [key, value] of formData.entries()) {
+        if (value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            this.appendChild(input);
+        }
+    }
+});
+</script>
+{% endblock %}

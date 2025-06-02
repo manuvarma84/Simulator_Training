@@ -1,0 +1,19 @@
+<!-- templates/admin/add_college.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add New College</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">College Code</label>
+            <input type="text" name="code" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">College Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add College</button>
+    </form>
+</div>
+{% endblock %}

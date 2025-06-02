@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <a href="{{ url_for('admin.upload_simulation') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> New Simulation
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{{ college.name }} ({{ college.code }})</h5>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Teaching Staff Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-badge"></i> Teaching Staff</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="display-2">{{ stats.staff_count }}</h2>
+                        <a href="{{ url_for('admin.manage_staff') }}" class="btn btn-info">
+                            Manage <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-people-fill"></i> Students</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="display-2">{{ stats.student_count }}</h2>
+                        <a href="{{ url_for('admin.manage_students') }}" class="btn btn-success">
+                            Manage <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulations Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-pc-display-horizontal"></i> Simulations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="display-2">{{ stats.simulation_count }}</h2>
+                        <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-warning">
+                            Manage <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

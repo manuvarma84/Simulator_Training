@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="business-sim-container">
+    <h2>{{ config.name }} - Round {{ state.current_round }}</h2>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card financials">
+                <div class="card-header">Financial Status</div>
+                <div class="card-body">
+                    <p>Cash: ${{ state.financials.cash }}M</p>
+                    <!-- Add other financial metrics -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <form method="POST" action="{{ url_for('business_sim.update_decisions', assignment_id=assignment_id) }}">
+                {% for segment in config.segments %}
+                <div class="segment-card">
+                    <h4>{{ segment }} Department</h4>
+                    <div class="form-group">
+                        <label>Price ($M)</label>
+                        <input type="number" class="form-control" 
+                               name="{{ segment }}_price" 
+                               value="{{ state.segments[segment].marketing.price }}">
+                    </div>
+                    <!-- Add other decision inputs -->
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Submit Decisions</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

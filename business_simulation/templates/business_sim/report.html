@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ sim.name }} Reports</h2>
+        <a href="{{ url_for('business_sim.export_report', sim_id=sim.id) }}" 
+           class="btn btn-secondary">
+            Export PDF
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header text-white bg-primary">
+                    Student Progress
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Progress</th>
+                                <th>Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <td>{{ assignment.student.email }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar" 
+                                             role="progressbar" 
+                                             style="width: {{ assignment.progress }}%">
+                                            {{ assignment.progress }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ assignment.updated_at.strftime('%Y-%m-%d') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header text-white bg-success">
+                    Financial Analytics
+                </div>
+                <div class="card-body">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample Chart.js implementation
+    const ctx = document.getElementById('financeChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Cash', 'Debt', 'Revenue'],
+            datasets: [{
+                label: 'Financial Metrics ($M)',
+                data: [{{ metrics.cash }}, {{ metrics.debt }}, {{ metrics.revenue }}],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)'
+                ]
+            }]
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

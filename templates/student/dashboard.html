@@ -1,0 +1,39 @@
+<!-- templates/student/dashboard.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>My Assigned Simulations</h2>
+    
+    {% if not assignments %}
+    <div class="alert alert-info mt-3">
+        No simulations assigned yet. Check back later!
+    </div>
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-3">
+        {% for assignment in assignments %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                    {{ assignment.simulation.name }}
+                    <span class="badge bg-{% if assignment.is_completed %}success{% else %}warning{% endif %} float-end">
+                        {% if assignment.is_completed %}Completed{% else %}Pending{% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Assigned by: {{ assignment.assigner.email if assignment.assigner else 'System' }}
+                        Assigned on: {{ assignment.assigned_at.strftime('%Y-%m-%d') }}
+                    </p>
+                    <a href="{{ url_for('student.view_simulation', assignment_id=assignment.id) }}"
+                       class="btn btn-primary">
+                        View Simulation
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

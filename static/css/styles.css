@@ -1,0 +1,56 @@
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.nav-tabs {
+    margin: 20px 0;
+}
+
+.progress {
+    height: 30px;
+    border-radius: 15px;
+}
+
+.progress-bar {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.slider-group {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.positioning-map {
+    max-width: 800px;
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    display: block;
+}
+
+.btn-outline-primary {
+    border-width: 2px;
+    margin: 5px;
+}
+
+.list-unstyled li {
+    padding: 3px 0;
+    font-size: 0.9em;
+}

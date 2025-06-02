@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Configure {{ sim.name }}</h2>
+    
+    <form method="POST" action="{{ url_for('business_sim.save_config', sim_id=sim.id) }}">
+        <div class="card mb-4">
+            <div class="card-header">Simulation Parameters</div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Maximum Rounds</label>
+                        <input type="number" class="form-control" 
+                               name="max_rounds" 
+                               value="{{ sim.config.max_rounds }}" 
+                               min="5" max="50" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Initial Cash ($ million)</label>
+                        <input type="number" class="form-control" 
+                               name="initial_cash" 
+                               value="{{ sim.config.initial_cash }}" 
+                               min="10" max="100" step="5" required>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" 
+                                   name="enable_analytics" 
+                                   id="analytics" 
+                                   {% if sim.config.enable_analytics %}checked{% endif %}>
+                            <label class="form-check-label" for="analytics">
+                                Enable Advanced Analytics
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+                Save Configuration
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

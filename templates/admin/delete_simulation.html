@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Delete Simulation Version</h2>
+        <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0"><i class="bi bi-exclamation-octagon"></i> Confirm Deletion</h5>
+        </div>
+        
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <strong>Warning:</strong> This action cannot be undone! The following version will be permanently deleted:
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">Simulation Name</dt>
+                <dd class="col-sm-9">{{ version.package.name }}</dd>
+
+                <dt class="col-sm-3">Version</dt>
+                <dd class="col-sm-9">{{ version.version }}</dd>
+
+                <dt class="col-sm-3">Upload Date</dt>
+                <dd class="col-sm-9">{{ version.upload_date.strftime('%Y-%m-%d %H:%M') }}</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-{% if version.is_active %}success{% else %}secondary{% endif %}">
+                        {% if version.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </dd>
+            </dl>
+
+            <form method="POST" action="{{ url_for('admin.delete_version', version_id=version.id) }}">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirm Permanent Deletion
+                    </button>
+                    <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+    "name": "Business Strategy Simulator",
+    "type": "business_sim",
+    "version": "1.0.2",
+    "author": "Your Company",
+    "description": "Multi-department business decision simulation",
+    "entry_points": {
+        "blueprint": "business_sim.routes.bp",
+        "student_view": "business_sim.routes.student_view",
+        "professor_config": "business_sim.routes.configure",
+        "report_view": "business_sim.routes.generate_report"
+    },
+    "requirements": [
+        "matplotlib>=3.5",
+        "fpdf2>=2.5"
+    ],
+    "config_schema": {
+        "max_rounds": {"type": "number", "default": 20},
+        "initial_cash": {"type": "number", "default": 50}
+    }
+}

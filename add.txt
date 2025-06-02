@@ -1,0 +1,21 @@
+from main import app
+from models import db, College
+from datetime import datetime  # <-- Required for proper conversion
+
+with app.app_context():
+    colleges = [
+        {"name": "College 1", "code": "COL_1", "subscription_expiry": datetime.strptime("2025-12-31", "%Y-%m-%d")},
+        {"name": "College 2", "code": "COL_2", "subscription_expiry": datetime.strptime("2025-06-30", "%Y-%m-%d")},
+        {"name": "College 3", "code": "COL_3", "subscription_expiry": datetime.strptime("2026-01-15", "%Y-%m-%d")},
+    ]
+
+    for col in colleges:
+        c = College(
+            name=col["name"],
+            code=col["code"],
+            subscription_expiry=col["subscription_expiry"]
+        )
+        db.session.add(c)
+
+    db.session.commit()
+    print("✅ Colleges added successfully.")-

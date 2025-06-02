@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-building"></i> {{ college.name }} ({{ college.code }})
+                <span class="badge bg-light text-dark ms-2">ID: {{ college.id }}</span>
+            </h4>
+        </div>
+        
+        <div class="card-body">
+            <h2 class="mb-4">Add New Student</h2>
+            
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Student Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" value="Student" readonly>
+                    </div>
+					<div class="col-md-4">
+							<label class="form-label">Program Type</label>
+								<select class="form-select" name="program_type" required>
+									<option value="">Select Program</option>
+									<option value="Undergraduate">Undergraduate</option>
+									<option value="Postgraduate">Postgraduate</option>
+									<option value="PhD">PhD</option>
+									<option value="Diploma">Diploma</option>
+								</select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">Batch Year</label>
+                        <input type="text" class="form-control" name="batch_info" 
+                               pattern="\d{4}" title="Enter 4-digit year" required>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label">Detailed Batch</label>
+                        <input type="text" class="form-control" name="detailed_batch" 
+                               placeholder="e.g., Computer Science Batch A">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save"></i> Add Student
+                    </button>
+                    <a href="{{ url_for('admin.manage_students') }}" class="btn btn-secondary btn-lg">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Edit Simulation Version</h2>
+        <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">{{ version.package.name }} - Version {{ version.version }}</h5>
+            <small class="text-muted">College: {{ version.package.college.name }} ({{ version.package.college.code }})</small>
+        </div>
+        
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Upload New Version Package</label>
+                    <input type="file" class="form-control" name="sim_package" accept=".zip">
+                    <div class="form-text">
+                        Optional: Upload a new ZIP file to replace current package files
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Current Configuration</label>
+                    <div class="bg-light p-3 rounded">
+                        <pre class="mb-0">{{ version.config|tojson(indent=2) }}</pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> 
+                    Uploading a new package will create a new version entry
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Update Version
+                    </button>
+                    <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

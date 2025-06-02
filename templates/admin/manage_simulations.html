@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Manage Simulations</h2>
+    
+    <div class="my-3">
+        <a href="{{ url_for('admin.upload_simulation') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add New Simulation Package
+        </a>
+    </div>
+
+    {% for package in packages %}
+    <div class="card mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ package.name }}</h5>
+            <div>
+                <span class="badge bg-info me-2">College: {{ package.college.code }}</span>
+                <span class="badge bg-secondary">Versions: {{ package.versions|length }}</span>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="mb-3">
+                <a href="{{ url_for('admin.upload_simulation') }}?package_id={{ package.id }}" 
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-upload"></i> Add New Version
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Version</th>
+                            <th>Status</th>
+                            <th>Upload Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for version in package.versions|sort(attribute='upload_date', reverse=true) %}
+                        <tr>
+                            <td>{{ version.version }}</td>
+                            <td>
+                                <span class="badge bg-{% if version.is_active %}success{% else %}secondary{% endif %}">
+                                    {% if version.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ version.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('admin.edit_simulation', version_id=version.id) }}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    
+                                    <form method="POST" 
+                                          action="{{ url_for('admin.toggle_version', version_id=version.id) }}">
+                                        <button type="submit" 
+                                                class="btn btn-sm btn-{% if version.is_active %}outline-danger{% else %}outline-success{% endif %}">
+                                            {% if version.is_active %}
+                                                <i class="bi bi-x-circle"></i>
+                                            {% else %}
+                                                <i class="bi bi-check-circle"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    
+                                    <form method="POST" 
+                                          action="{{ url_for('admin.delete_version', version_id=version.id) }}">
+                                        <button type="submit" 
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Delete this version permanently?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No simulation packages found. Upload your first simulation package using the button above.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

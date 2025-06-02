@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ sim.name }}</h2>
+        <span class="badge bg-secondary">
+            Package: {{ package.name }} v{{ package.version }}
+        </span>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">Instance Configuration</div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Max Rounds</dt>
+                <dd class="col-sm-9">{{ instance_config.get('max_rounds', 'Not set') }}</dd>
+
+                <dt class="col-sm-3">Initial Cash</dt>
+                <dd class="col-sm-9">${{ instance_config.get('initial_cash', 0) }}M</dd>
+
+                <dt class="col-sm-3">Assigned Students</dt>
+                <dd class="col-sm-9">{{ sim.assigned_count }}</dd>
+
+                <dt class="col-sm-3">Completed Students</dt>
+                <dd class="col-sm-9">{{ sim.completed_count }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Package Configuration</div>
+        <div class="card-body">
+            {% if 'entry_points' in package.config %}
+            <h5>Available Features</h5>
+            <ul class="list-group mb-3">
+                {% for feature, endpoint in package.config['entry_points'].items() %}
+                <li class="list-group-item">
+                    <i class="bi bi-{{ 'check-circle' if endpoint else 'x-circle' }}"></i>
+                    {{ feature|replace('_', ' ')|title }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if 'components' in package.config %}
+            <h5>Simulation Components</h5>
+            <div class="row g-3">
+                {% for component in package.config['components'] %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">{{ component.get('name', 'Unnamed Component') }}</div>
+                        <div class="card-body">
+                            {% for input in component.get('inputs', []) %}
+                            <div class="mb-2">
+                                <strong>{{ input.get('label', 'Unlabeled Input') }}</strong> 
+                                ({{ input.get('type', 'text') }})
+                                {% if 'options' in input %}
+                                <span class="text-muted">
+                                    - {{ input['options']|join(', ') }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

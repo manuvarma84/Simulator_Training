@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Home - SimLab{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center py-5">
+    <h1 class="display-4">Welcome to SimLab</h1>
+    <p class="lead">Interactive Business Simulation Platform</p>
+    <hr class="my-4">
+    
+    {% if current_user.is_authenticated %}
+        <div class="row justify-content-center">
+            {% if current_user.role == 'admin' %}
+                <!-- Admin Dashboard Card -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-speedometer2"></i> Admin Dashboard
+                            </h5>
+                            <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-primary">
+                                View Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Management Card -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-pc-display-horizontal"></i> Simulations
+                            </h5>
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('admin.manage_simulations') }}" class="btn btn-success">
+                                    Manage Simulations
+                                </a>
+                                <a href="{{ url_for('admin.upload_simulation') }}" class="btn btn-outline-primary">
+                                    Add New Simulation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% elif current_user.role == 'professor' %}
+                <!-- Professor Content (existing code) -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Create New Simulation</h5>
+                            <a href="{{ url_for('prof.create_simulation') }}" class="btn btn-primary">
+                                Start Building
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Universal Dashboard Card -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-columns-gap"></i> 
+                            {% if current_user.role == 'admin' %}User Management
+                            {% else %}Your Dashboard{% endif %}
+                        </h5>
+                        <div class="d-grid gap-2">
+                            {% if current_user.role == 'admin' %}
+                                <a href="{{ url_for('admin.manage_staff') }}" class="btn btn-warning">
+                                    Manage Staff
+                                </a>
+                                <a href="{{ url_for('admin.manage_students') }}" class="btn btn-info">
+                                    Manage Students
+                                </a>
+                            {% else %}
+                                <a href="{% if current_user.role == 'professor' %}{{ url_for('prof.dashboard') }}{% else %}{{ url_for('student.dashboard') }}{% endif %}" 
+                                   class="btn btn-success">
+                                    Go to Dashboard
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Unauthenticated Content (existing code) -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Get Started</h4>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                                Sign In
+                            </a>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary btn-lg">
+                                Create Account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

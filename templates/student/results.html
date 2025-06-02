@@ -1,0 +1,92 @@
+<!-- templates/student/results.html -->
+{% extends "base.html" %}
+
+{% block title %}Results - {{ sim.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ sim.name }} Results</h2>
+        <span class="badge bg-{% if assignment.is_completed %}success{% else %}warning{% endif %}">
+            {% if assignment.is_completed %}Completed{% else %}In Progress{% endif %}
+        </span>
+    </div>
+
+    <div class="row">
+        <!-- Decisions Review Column -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-clipboard-data"></i> Your Decisions
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for decision in student_decisions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">{{ decision.label }}</div>
+                                <small class="text-muted">{{ decision.variable }}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">{{ decision.value }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Results Column -->
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-graph-up"></i> Simulation Analytics
+                </div>
+                <div class="card-body">
+                    {% for analytic in analytics_results %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="card-title">{{ analytic.name }}</h5>
+                                    <code class="text-muted">{{ analytic.formula }}</code>
+                                    <div class="mt-2">
+                                        <small>Variables used: {{ analytic.variables|join(', ') }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="display-6 text-success">
+                                        {{ analytic.result|round(2) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        No analytics available for this simulation
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('student.dashboard') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+})
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Professor Dashboard 
+        <small class="text-muted">({{ simulations|length }} simulations)</small>
+    </h2>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <i class="bi bi-plus-circle"></i> New Simulation
+                    </h5>
+                    <p class="card-text">Create a new simulation scenario for your students</p>
+                    <a href="{{ url_for('prof.create_simulation') }}" 
+                       class="btn btn-primary mt-auto">
+                        Create Simulation
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Your Simulations</span>
+                    <span class="badge bg-primary">
+                        {{ total_students }} students in college
+                    </span>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for sim in simulations %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="w-50">
+                                    <h5 class="mb-1">{{ sim.name }}</h5>
+                                    <small class="text-muted">
+                                        Created: {{ sim.created_at.strftime('%b %d, %Y') }}
+                                    </small>
+                                </div>
+                                
+                                <div class="text-center mx-3">
+                                    <div class="text-primary fw-bold">{{ sim.assigned_count }}</div>
+                                    <small class="text-muted">Assigned</small>
+                                </div>
+                                
+                                <div class="text-center mx-3">
+                                    <div class="text-success fw-bold">{{ sim.completed_count }}</div>
+                                    <small class="text-muted">Completed</small>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('prof.assign_simulation', sim_id=sim.id) }}" 
+                                       class="btn btn-sm btn-outline-primary"
+                                       data-bs-toggle="tooltip" 
+                                       title="Assign to students">
+                                        <i class="bi bi-person-plus"></i>
+                                    </a>
+									<a href="{{ url_for('prof.view_simulation', sim_id=sim.id) }}" 
+									class="btn btn-sm btn-outline-primary">
+										View Details
+									</a>
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal{{ sim.id }}"
+                                            title="Delete simulation">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {% if sim.assigned_count > 0 %}
+                            <div class="mt-2">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" 
+                                         role="progressbar" 
+                                         style="width: {{ (sim.completed_count/sim.assigned_count)*100 }}%">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="list-group-item text-center text-muted py-4">
+                            No simulations created yet
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modals -->
+{% for sim in simulations %}
+<div class="modal fade" id="deleteModal{{ sim.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Delete simulation "{{ sim.name }}"? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="{{ url_for('prof.delete_simulation', sim_id=sim.id) }}" 
+                   class="btn btn-danger">
+                    Delete
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize tooltips
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => 
+    new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+{% endblock %}
